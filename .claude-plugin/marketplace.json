@@ -1,0 +1,22 @@
+{
+  "name": "vibe-code-security",
+  "owner": {
+    "name": "The Agents Work",
+    "url": "https://github.com/the-agents-work"
+  },
+  "plugins": [
+    {
+      "name": "vibe-code-security",
+      "source": ".",
+      "description": "Pre-deploy security audit for vibe-coded apps. Catches unauthenticated admin APIs, missing RLS, leaked service keys, exposed debug routes - the basic mistakes you don't want to ship.",
+      "version": "0.1.0",
+      "author": {
+        "name": "toanbku",
+        "url": "https://github.com/toanbku"
+      },
+      "homepage": "https://github.com/the-agents-work/vibe-code-security",
+      "license": "MIT",
+      "keywords": ["security", "audit", "vibe-coding", "nextjs", "supabase", "pre-deploy"]
+    }
+  ]
+}

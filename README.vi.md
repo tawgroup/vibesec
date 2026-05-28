@@ -2,12 +2,12 @@
 
 # vibe-code-security
 
-> Một Claude Code skill audit bảo mật cho app vibe-code trước khi deploy. Catch những lỗi cơ bản mà anh không muốn ship lên production.
+> Một skill audit bảo mật cho app của bạn trước khi deploy. Tránh những rủi ro đáng tiếc, mà bạn có thể ngăn chặn từ rất sớm
 
-Anh vừa build xong 1 app trong 1 weekend với Claude / Cursor / Lovable. Nó chạy được. Anh đang chuẩn bị deploy. **Trước khi tweet bài launch lên Twitter**, chạy cái này:
+Bạn vừa vibe code xong 1 app với Claude/Cursor/Lovable. Nó chạy được. Bạn đang chuẩn bị deploy. **Trước khi deploy nó lên internet**, bạn cần chạy cái này:
 
 ```
-Audit app giúp em với vibe-code-security
+Audit app giúp mình với vibe-code-security
 ```
 
 Kết quả nhận được:
@@ -18,12 +18,12 @@ Stack: Next.js 15 + Supabase
 Đã chạy 22 check  •  Phát hiện 5 vấn đề (2 critical, 2 high, 1 medium)
 
 ## CRITICAL
-1. service_role key bị lộ ở src/lib/admin.ts — ai cũng đọc được DB của anh
+1. service_role key bị lộ ở src/lib/admin.ts — ai cũng đọc được DB của bạn
 2. POST /api/admin/delete-user không có auth — ai cũng xoá được user
 ...
 ```
 
-Sau đó skill sẽ hỏi anh có muốn fix không.
+Sau đó skill sẽ hỏi bạn có muốn fix không.
 
 ## Tại sao có cái skill này
 
@@ -36,7 +36,7 @@ AI coding agent rất giỏi viết feature, nhưng rất tệ về security def
 - `.env` commit thẳng vào repo
 - Debug route (`/api/test`, `/api/seed`) bị bỏ quên trong production
 
-Skill này encode lại checklist đó để anh không phải tự nhớ.
+Skill này encode lại checklist đó để bạn không phải tự nhớ.
 
 ## Real-world example
 
@@ -46,22 +46,34 @@ Skill được test thật trên 1 app vibe-code deploy lên Vercel. Trong 30 gi
 - ✅ RLS policy `USING (TRUE)` trên 8 table (mọi authenticated user đọc/ghi/xoá được mọi thứ)
 - ✅ Webhook auth là conditional thay vì mandatory
 
-Verify bằng `curl` thì confirm endpoint trả về full PII của khách hàng (tên, SĐT, email, địa chỉ, sinh nhật) cho bất kỳ ai trên internet.
+Lấy được full PII của khách hàng (tên, SĐT, email, địa chỉ, sinh nhật), rất rủi ro nếu data này nằm trong tay kẻ xấu
 
 ## Cài đặt
 
-### Như một Claude Code skill (cá nhân)
+### Cách 1: 1-liner qua `npx skills` (recommend — chạy được cho Claude Code, Cursor, Codex, OpenCode...)
 
 ```bash
-mkdir -p ~/.claude/skills
-git clone https://github.com/the-agents-work/vibe-code-security ~/.claude/skills/vibe-code-security
+npx skills add the-agents-work/vibe-code-security
 ```
 
-Restart Claude Code. Skill sẽ tự trigger khi anh yêu cầu review trước deploy.
+Xong. Restart agent là skill tự trigger khi bạn yêu cầu review trước deploy.
 
-### Như một plugin (chia sẻ)
+### Cách 2: Claude Code plugin marketplace
 
-Sắp có — sẽ publish lên plugin marketplace.
+```
+/plugin marketplace add the-agents-work/vibe-code-security
+/plugin install vibe-code-security
+```
+
+### Cách 3: Thủ công (git clone)
+
+```bash
+git clone https://github.com/the-agents-work/vibe-code-security /tmp/vcs-repo
+mkdir -p ~/.claude/skills
+cp -r /tmp/vcs-repo/skills/vibe-code-security ~/.claude/skills/
+```
+
+Restart Claude Code.
 
 ## Stack đang support
 
@@ -70,12 +82,12 @@ Sắp có — sẽ publish lên plugin marketplace.
 | Next.js (App Router + Pages Router) | ✅ |
 | Supabase | ✅ |
 | Common checks (secrets, CORS, headers) | ✅ — chạy cho mọi stack |
-| Prisma | 🟡 cần contributor, mời PR |
-| Drizzle | 🟡 cần contributor, mời PR |
-| SvelteKit | 🟡 cần contributor, mời PR |
-| Clerk / Auth.js | 🟡 cần contributor, mời PR |
-| FastAPI | 🟡 cần contributor, mời PR |
-| Firebase | 🟡 cần contributor, mời PR |
+| Prisma | 🟡 cần contributor, PR welcome |
+| Drizzle | 🟡 cần contributor, PR welcome |
+| SvelteKit | 🟡 cần contributor, PR welcome |
+| Clerk / Auth.js | 🟡 cần contributor, PR welcome |
+| FastAPI | 🟡 cần contributor, PR welcome |
+| Firebase | 🟡 cần contributor, PR welcome |
 
 Muốn thêm stack mới? Đọc [CONTRIBUTING.md](./CONTRIBUTING.md). Thêm 1 stack chỉ cần 1 file markdown — không đụng code.
 
@@ -85,15 +97,15 @@ Muốn thêm stack mới? Đọc [CONTRIBUTING.md](./CONTRIBUTING.md). Thêm 1 s
 2. Load checklist tương ứng từ `checks/`
 3. Chạy check bằng grep / file pattern — **không LLM-as-judge**, mọi finding đều point tới file thật
 4. Report group theo severity (CRITICAL / HIGH / MEDIUM / LOW)
-5. Hỏi anh có muốn fix không trước khi sửa
+5. Hỏi bạn có muốn fix không trước khi sửa
 
-## Skill này KHÔNG phải là gì
+## Skill này KHÔNG phải là
 
 - Không thay thế được pentest thật
 - Không phải SAST tool có taint analysis
 - Không phải exhaustive — nó catch *footgun phổ biến*, không phải mọi CVE
 
-Mục tiêu: **anh sẽ không ship những lỗi hiển nhiên**. Điều đó đáng giá rất nhiều khi alternative là "2 giờ sáng phát hiện anon delete được mọi user".
+Mục tiêu: **bạn sẽ không ship những lỗi hiển nhiên**. Điều đó đáng giá rất nhiều khi alternative là "2 giờ sáng phát hiện anon delete được mọi user".
 
 ## License
 

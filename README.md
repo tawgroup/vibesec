@@ -2,19 +2,19 @@
 
 # vibe-code-security
 
-> A Claude Code skill that audits your vibe-coded app for the basic security mistakes you'd be embarrassed to ship.
+> A security audit skill for your app before you deploy. Catch the kind of mistakes you'd really rather not ship to production.
 
-You built something in a weekend with Claude / Cursor / Lovable. It works. You're about to deploy. **Before you tweet the launch**, run this:
+You just vibe-coded an app with Claude / Cursor / Lovable. It works. You're about to deploy. **Before it goes live on the internet**, run this:
 
 ```
-Please audit my app with vibe-code-security
+Audit my app with vibe-code-security
 ```
 
-You get a report like:
+You get back something like:
 
 ```
 # Vibe-Code Security Audit
-Stack detected: Next.js 15 + Supabase
+Stack: Next.js 15 + Supabase
 Checks run: 22  •  Issues found: 5 (2 critical, 2 high, 1 medium)
 
 ## CRITICAL
@@ -23,35 +23,57 @@ Checks run: 22  •  Issues found: 5 (2 critical, 2 high, 1 medium)
 ...
 ```
 
-Then it offers to fix them.
+Then the skill offers to fix them.
 
 ## Why this exists
 
-AI coding agents are very good at shipping features and very bad at security defaults. Repeated patterns we see in vibe-coded apps:
+AI coding agents are excellent at shipping features and terrible at security defaults. The recurring vibe-code footguns:
 
-- Admin API routes with no auth check ("the AI wrote the route, it works, ship it")
-- Supabase tables with RLS disabled or `USING (true)`
-- `service_role` key in client-bundled code
-- `user_metadata.role === 'admin'` checks (user-editable, trivial privilege escalation)
-- `.env` committed to the repo
-- Debug routes (`/api/test`, `/api/seed`) left in production
+- Admin API routes with no auth check (*"the AI wrote the route, it works, ship it"*)
+- Supabase tables with RLS disabled or `USING (true)` policies
+- `service_role` key bundled into client-side code
+- Authorization based on `user_metadata.role === 'admin'` (user-editable → trivial privilege escalation)
+- `.env` committed straight into the repo
+- Debug routes (`/api/test`, `/api/seed`) left running in production
 
-This skill encodes the checklist so you don't have to remember it.
+This skill encodes that checklist so you don't have to remember it.
+
+## Real-world example
+
+Tested on a real vibe-coded app deployed to Vercel. In 30 seconds it found:
+
+- ✅ 15 API endpoints with no auth check (a flower-shop admin panel)
+- ✅ RLS `USING (TRUE)` policies on 8 tables (any authenticated user could read/write/delete anything)
+- ✅ Conditional webhook auth instead of mandatory
+
+A simple `curl` confirmed full customer PII (name, phone, email, address, birthday) was returned to anyone on the internet.
 
 ## Install
 
-### As a Claude Code skill (personal)
+### Option 1: One-liner via `npx skills` (recommended — works across Claude Code, Cursor, Codex, OpenCode...)
 
 ```bash
-mkdir -p ~/.claude/skills
-git clone https://github.com/<you>/vibe-code-security ~/.claude/skills/vibe-code-security
+npx skills add the-agents-work/vibe-code-security
 ```
 
-Restart Claude Code. The skill is now available and will auto-trigger when you ask for a pre-deploy review.
+That's it. Restart your agent and the skill auto-triggers on pre-deploy reviews.
 
-### As a plugin (shareable)
+### Option 2: Claude Code plugin marketplace
 
-Coming soon - will publish to a plugin marketplace.
+```
+/plugin marketplace add the-agents-work/vibe-code-security
+/plugin install vibe-code-security
+```
+
+### Option 3: Manual (git clone)
+
+```bash
+git clone https://github.com/the-agents-work/vibe-code-security /tmp/vcs-repo
+mkdir -p ~/.claude/skills
+cp -r /tmp/vcs-repo/skills/vibe-code-security ~/.claude/skills/
+```
+
+Restart Claude Code.
 
 ## Supported stacks
 
@@ -67,28 +89,28 @@ Coming soon - will publish to a plugin marketplace.
 | FastAPI | 🟡 wanted, PR welcome |
 | Firebase | 🟡 wanted, PR welcome |
 
-Want to add one? See [CONTRIBUTING.md](./CONTRIBUTING.md). Adding a stack is one markdown file - no code.
+Want to add one? See [CONTRIBUTING.md](./CONTRIBUTING.md). Adding a stack is a single markdown file — no code changes.
 
 ## How it works
 
-1. Skill reads `package.json` (and other manifests) to detect your stack
+1. Reads `package.json` (and other manifests) to detect your stack
 2. Loads the relevant checklist(s) from `checks/`
-3. Runs grep / file-pattern checks - no LLM hallucinations, every finding points to a real file
+3. Runs grep / file-pattern checks — **no LLM-as-judge**, every finding points to a real file and line
 4. Reports findings grouped by severity (CRITICAL / HIGH / MEDIUM / LOW)
-5. Offers to fix them with your confirmation
+5. Asks before fixing anything
 
 ## What this is NOT
 
 - Not a replacement for a real pentest
 - Not a SAST tool with taint analysis
-- Not exhaustive - it catches *common footguns*, not every CVE
+- Not exhaustive — it catches *common footguns*, not every CVE
 
-The goal: **you won't ship the obvious mistakes**. That's worth a lot when the alternative is "found out at 2am that anon can delete any user."
+The goal: **you won't ship the obvious mistakes**. That's worth a lot when the alternative is finding out at 2am that anon can delete any user.
 
 ## License
 
-MIT. Take it, fork it, improve it.
+MIT. Fork it, improve it, ship it.
 
 ## Credits
 
-Built by [@toanbku](https://github.com/toanbku) for the vibe-coding community.
+Built by [@toanbku](https://github.com/toanbku) for the global vibe-coding community.
