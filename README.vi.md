@@ -53,7 +53,7 @@ Lấy được full PII của khách hàng (tên, SĐT, email, địa chỉ, sin
 ### Cách 1: 1-liner qua `npx skills` (recommend — chạy được cho Claude Code, Cursor, Codex, OpenCode...)
 
 ```bash
-npx skills add the-agents-work/vibesec
+npx skills add tawgroup/vibesec
 ```
 
 Xong. Restart agent là skill tự trigger khi bạn yêu cầu review trước deploy.
@@ -61,14 +61,14 @@ Xong. Restart agent là skill tự trigger khi bạn yêu cầu review trước 
 ### Cách 2: Claude Code plugin marketplace
 
 ```
-/plugin marketplace add the-agents-work/vibesec
+/plugin marketplace add tawgroup/vibesec
 /plugin install vibesec
 ```
 
 ### Cách 3: Thủ công (git clone)
 
 ```bash
-git clone https://github.com/the-agents-work/vibesec /tmp/vcs-repo
+git clone https://github.com/tawgroup/vibesec /tmp/vcs-repo
 mkdir -p ~/.claude/skills
 cp -r /tmp/vcs-repo/skills/vibesec ~/.claude/skills/
 ```

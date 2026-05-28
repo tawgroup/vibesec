@@ -53,7 +53,7 @@ A simple `curl` confirmed full customer PII (name, phone, email, address, birthd
 ### Option 1: One-liner via `npx skills` (recommended — works across Claude Code, Cursor, Codex, OpenCode...)
 
 ```bash
-npx skills add the-agents-work/vibesec
+npx skills add tawgroup/vibesec
 ```
 
 That's it. Restart your agent and the skill auto-triggers on pre-deploy reviews.
@@ -61,14 +61,14 @@ That's it. Restart your agent and the skill auto-triggers on pre-deploy reviews.
 ### Option 2: Claude Code plugin marketplace
 
 ```
-/plugin marketplace add the-agents-work/vibesec
+/plugin marketplace add tawgroup/vibesec
 /plugin install vibesec
 ```
 
 ### Option 3: Manual (git clone)
 
 ```bash
-git clone https://github.com/the-agents-work/vibesec /tmp/vcs-repo
+git clone https://github.com/tawgroup/vibesec /tmp/vcs-repo
 mkdir -p ~/.claude/skills
 cp -r /tmp/vcs-repo/skills/vibesec ~/.claude/skills/
 ```

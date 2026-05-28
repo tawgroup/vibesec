@@ -7,8 +7,8 @@
     "name": "toanbku",
     "url": "https://github.com/toanbku"
   },
-  "homepage": "https://github.com/the-agents-work/vibesec",
-  "repository": "https://github.com/the-agents-work/vibesec",
+  "homepage": "https://github.com/tawgroup/vibesec",
+  "repository": "https://github.com/tawgroup/vibesec",
   "license": "MIT",
   "keywords": ["security", "audit", "vibe-coding", "nextjs", "supabase", "pre-deploy"],
   "skills": "./skills/"
