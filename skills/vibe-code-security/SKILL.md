@@ -1,7 +1,17 @@
 ---
 name: vibe-code-security
-description: Pre-deploy security audit for vibe-coded apps. Catches the basic mistakes AI coding agents (and humans) routinely ship to production - unauthenticated admin APIs, missing RLS, leaked service keys, exposed debug routes, hardcoded secrets, permissive CORS. Stack-aware: detects Next.js, Supabase, etc. from package.json and runs the relevant checklist.
-when_to_use: Use whenever the user is about to deploy, ship, launch, or "go live" - phrases like "review before deploy", "is this safe to push to production", "check my app for security issues", "pre-launch audit", "I vibe-coded this, please audit it". Also trigger on explicit requests like "run vibe-code-security" or "/vibe-code-security".
+description: >
+  Pre-deploy security audit for vibe-coded apps. Catches the basic mistakes
+  AI coding agents (and humans) routinely ship to production - unauthenticated
+  admin APIs, missing RLS, leaked service keys, exposed debug routes,
+  hardcoded secrets, permissive CORS. Stack-aware - detects Next.js, Supabase,
+  etc. from package.json and runs the relevant checklist.
+when_to_use: >
+  Use whenever the user is about to deploy, ship, launch, or "go live" -
+  phrases like "review before deploy", "is this safe to push to production",
+  "check my app for security issues", "pre-launch audit", "I vibe-coded this,
+  please audit it". Also trigger on explicit requests like
+  "run vibe-code-security" or "/vibe-code-security".
 allowed-tools: Read, Grep, Glob, Bash(cat *), Bash(ls *), Bash(find *), Bash(jq *), Bash(rg *)
 ---
 
