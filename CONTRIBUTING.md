@@ -61,6 +61,18 @@ When in doubt, downgrade. It's better to surprise the user with "wow that's wors
 
 **Cite file + line in findings.** The output report must point to a real location. If your check can't, restructure it.
 
+## YAML frontmatter gotcha
+
+If you edit `SKILL.md`'s frontmatter, **do not** write long inline strings that contain a colon (`:`). YAML parses `foo: bar: baz` as a nested mapping and tools like `npx skills add` will reject the skill with "no skills found".
+
+Use a folded block scalar (`>`) for any field longer than one line or containing colons:
+
+```yaml
+description: >
+  This is a long description that can contain colons - like this one -
+  without confusing the YAML parser. Newlines are folded into spaces.
+```
+
 ## Things we don't want
 
 - **Generic OWASP top-10 recitations.** This skill exists because OWASP top-10 is not what vibe-coders ship to prod. Stack-specific footguns are.
