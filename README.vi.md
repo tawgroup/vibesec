@@ -1,13 +1,13 @@
 **🇻🇳 Tiếng Việt** • [🇬🇧 English](./README.md)
 
-# vibe-code-security
+# vibesec
 
 > Một skill audit bảo mật cho app của bạn trước khi deploy. Tránh những rủi ro đáng tiếc, mà bạn có thể ngăn chặn từ rất sớm
 
 Bạn vừa vibe code xong 1 app với Claude/Cursor/Lovable. Nó chạy được. Bạn đang chuẩn bị deploy. **Trước khi deploy nó lên internet**, bạn cần chạy cái này:
 
 ```
-Audit app giúp mình với vibe-code-security
+Audit app giúp mình với vibesec
 ```
 
 Kết quả nhận được:
@@ -53,7 +53,7 @@ Lấy được full PII của khách hàng (tên, SĐT, email, địa chỉ, sin
 ### Cách 1: 1-liner qua `npx skills` (recommend — chạy được cho Claude Code, Cursor, Codex, OpenCode...)
 
 ```bash
-npx skills add the-agents-work/vibe-code-security
+npx skills add the-agents-work/vibesec
 ```
 
 Xong. Restart agent là skill tự trigger khi bạn yêu cầu review trước deploy.
@@ -61,16 +61,16 @@ Xong. Restart agent là skill tự trigger khi bạn yêu cầu review trước 
 ### Cách 2: Claude Code plugin marketplace
 
 ```
-/plugin marketplace add the-agents-work/vibe-code-security
-/plugin install vibe-code-security
+/plugin marketplace add the-agents-work/vibesec
+/plugin install vibesec
 ```
 
 ### Cách 3: Thủ công (git clone)
 
 ```bash
-git clone https://github.com/the-agents-work/vibe-code-security /tmp/vcs-repo
+git clone https://github.com/the-agents-work/vibesec /tmp/vcs-repo
 mkdir -p ~/.claude/skills
-cp -r /tmp/vcs-repo/skills/vibe-code-security ~/.claude/skills/
+cp -r /tmp/vcs-repo/skills/vibesec ~/.claude/skills/
 ```
 
 Restart Claude Code.

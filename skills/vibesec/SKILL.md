@@ -1,5 +1,5 @@
 ---
-name: vibe-code-security
+name: vibesec
 description: >
   Pre-deploy security audit for vibe-coded apps. Catches the basic mistakes
   AI coding agents (and humans) routinely ship to production - unauthenticated
@@ -11,11 +11,11 @@ when_to_use: >
   phrases like "review before deploy", "is this safe to push to production",
   "check my app for security issues", "pre-launch audit", "I vibe-coded this,
   please audit it". Also trigger on explicit requests like
-  "run vibe-code-security" or "/vibe-code-security".
+  "run vibesec" or "/vibesec".
 allowed-tools: Read, Grep, Glob, Bash(cat *), Bash(ls *), Bash(find *), Bash(jq *), Bash(rg *)
 ---
 
-# vibe-code-security
+# vibesec — Vibe-Code Security
 
 You are running a **pre-deploy security audit** for an app that was likely built quickly with AI assistance ("vibe coded"). Your job is to catch the basic mistakes that get shipped to production and bite the developer later.
 

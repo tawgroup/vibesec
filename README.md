@@ -1,13 +1,13 @@
 **🇬🇧 English** • [🇻🇳 Tiếng Việt](./README.vi.md)
 
-# vibe-code-security
+# vibesec
 
 > A security audit skill for your app before you deploy. Catch the kind of mistakes you'd really rather not ship to production.
 
 You just vibe-coded an app with Claude / Cursor / Lovable. It works. You're about to deploy. **Before it goes live on the internet**, run this:
 
 ```
-Audit my app with vibe-code-security
+Audit my app with vibesec
 ```
 
 You get back something like:
@@ -53,7 +53,7 @@ A simple `curl` confirmed full customer PII (name, phone, email, address, birthd
 ### Option 1: One-liner via `npx skills` (recommended — works across Claude Code, Cursor, Codex, OpenCode...)
 
 ```bash
-npx skills add the-agents-work/vibe-code-security
+npx skills add the-agents-work/vibesec
 ```
 
 That's it. Restart your agent and the skill auto-triggers on pre-deploy reviews.
@@ -61,16 +61,16 @@ That's it. Restart your agent and the skill auto-triggers on pre-deploy reviews.
 ### Option 2: Claude Code plugin marketplace
 
 ```
-/plugin marketplace add the-agents-work/vibe-code-security
-/plugin install vibe-code-security
+/plugin marketplace add the-agents-work/vibesec
+/plugin install vibesec
 ```
 
 ### Option 3: Manual (git clone)
 
 ```bash
-git clone https://github.com/the-agents-work/vibe-code-security /tmp/vcs-repo
+git clone https://github.com/the-agents-work/vibesec /tmp/vcs-repo
 mkdir -p ~/.claude/skills
-cp -r /tmp/vcs-repo/skills/vibe-code-security ~/.claude/skills/
+cp -r /tmp/vcs-repo/skills/vibesec ~/.claude/skills/
 ```
 
 Restart Claude Code.
