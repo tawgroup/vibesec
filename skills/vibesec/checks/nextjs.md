@@ -55,6 +55,30 @@ if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 **Look for:** `Access-Control-Allow-Origin: *` set on routes that accept credentials or do mutations. Grep `Access-Control-Allow-Origin` and `cors(` (popular package).
 **Why this is bad:** Any site can call your API on behalf of a logged-in user.
 
+### N-H5. Authenticated but no role check on admin routes (broken access control)
+**Look for:** Routes under admin-ish paths (`app/api/admin/**`, `pages/api/admin/**`, anything matching `admin|internal|staff|moderator|backoffice` in the path or filename). For each, read the handler.
+**Verify:** The handler must do BOTH:
+1. Confirm a user is logged in (`auth()`, `getUser()`, session check, etc.)
+2. Check that the user has admin/elevated role (`role === 'admin'`, `is_admin`, `app_metadata.role`, RBAC helper like `requireAdmin()`, membership check against an admin table)
+
+**Flag if:** Step 1 exists but step 2 is missing — any logged-in user can hit the route.
+**Why this is bad:** This is vertical privilege escalation. The route says "admin", but the only gate is "are you signed up?". Anyone who creates a free account becomes admin. OWASP A01 - the #1 web vuln category.
+**Don't confuse with:**
+- N-C1 (no auth at all) — that's CRITICAL
+- S-H1 (role check uses `user_metadata`) — that's a broken role check; this one is a *missing* role check
+**Fix template:**
+```ts
+const { data: { user } } = await supabase.auth.getUser()
+if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+// Read role from a trusted source (app_metadata or a server-side table) — never user_metadata
+const { data: profile } = await supabase
+  .from('profiles').select('role').eq('id', user.id).single()
+if (profile?.role !== 'admin') {
+  return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+}
+```
+
 ---
 
 ## MEDIUM
