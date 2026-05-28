@@ -79,6 +79,32 @@ if (profile?.role !== 'admin') {
 }
 ```
 
+### N-H6. Object-level authorization missing (IDOR / horizontal privesc)
+**Look for:** Route handlers (`app/api/**/route.{ts,js}`, `pages/api/**`) that take a resource ID from the request — `params.id`, `params.userId`, `searchParams.get('id')`, `body.orderId`, `body.user_id`, etc. — and use it directly in a DB query or mutation.
+**Verify:** At least one of the following is true:
+1. The query is scoped to the session user: `.eq('user_id', user.id)` / `.match({ owner: user.id })` / WHERE clause referencing the authenticated user
+2. There's an explicit ownership check before the operation (`if (resource.owner_id !== user.id) return 403`)
+3. The table has RLS enabled with a policy that enforces ownership (cross-check with `checks/supabase.md` if Supabase is in use)
+
+**Flag if:** None of the above — the handler trusts the ID from the request body/URL as-is.
+**Why this is bad:** Horizontal privilege escalation. User A passes user B's ID and reads/edits/deletes user B's data. OWASP calls this BOLA/IDOR — extremely common in vibe-coded REST APIs (AI writes `supabase.from('orders').select().eq('id', params.id)` and ships).
+**Fix template:**
+```ts
+// BAD — trusts the ID from the URL
+const { data } = await supabase.from('orders').select().eq('id', params.id).single()
+
+// GOOD — scopes to the session user
+const { data: { user } } = await supabase.auth.getUser()
+if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+const { data } = await supabase
+  .from('orders').select()
+  .eq('id', params.id)
+  .eq('user_id', user.id)  // ← this is the fix
+  .single()
+if (!data) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+```
+Or: leave the query un-scoped but rely on RLS to enforce ownership (only safe if RLS policies are correct — see `checks/supabase.md`).
+
 ---
 
 ## MEDIUM
