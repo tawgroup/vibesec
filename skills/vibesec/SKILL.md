@@ -81,7 +81,12 @@ Output a single markdown report grouped by severity:
 - **MEDIUM** = bad practice or defense-in-depth gap (e.g., missing security headers, open CORS for non-auth endpoints)
 - **LOW** = nitpick, only mention if relevant
 
-Only report findings you actually verified. If a check passes, list it under "Passed" so the user sees what was covered. Do not pad the report.
+Only report findings you actually verified. Do not pad the report.
+
+**Rules for `## ✅ Passed`:**
+- Each line must reference a real check ID you actually ran (e.g. "N-C1: all API routes have auth"). No vague claims like "good error handling" or "code looks secure" — those aren't checks.
+- Cap at 5 lines. If more than 5 checks passed, write "+ N other checks passed" on the last line and stop.
+- If nothing of note passed, omit the section entirely. Better empty than padded.
 
 ### 4. Offer to fix
 
