@@ -93,7 +93,13 @@ After the report, ask: *"Want me to fix [N] of these now? I'll start with the cr
 - Not a SAST tool - it uses heuristics, not taint analysis
 - Not exhaustive - it catches the *common* footguns, not every CVE
 
-Tell the user this explicitly in the report footer. The goal is "you won't ship the obvious mistakes," not "your app is bulletproof."
+End every report with this footer, translated into the user's language. Use this exact phrasing — no extra sentences, no "the goal is..." flourish, no quoted slogans:
+
+> Disclaimer: This is not a professional pentest. The audit checks for common mistakes that AI coding agents tend to leave behind. It is not a substitute for a full security audit.
+
+Vietnamese version (use verbatim when the user prompted in Vietnamese):
+
+> Disclaimer: Đây không phải pentest chuyên nghiệp. Audit này kiểm tra các lỗi phổ biến mà AI coding agents thường để sót. Nó không thay thế cho security audit đầy đủ.
 
 ## Contributing more stacks
 
