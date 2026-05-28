@@ -1,3 +1,5 @@
+**🇬🇧 English** • [🇻🇳 Tiếng Việt](./README.vi.md)
+
 # vibe-code-security
 
 > A Claude Code skill that audits your vibe-coded app for the basic security mistakes you'd be embarrassed to ship.
