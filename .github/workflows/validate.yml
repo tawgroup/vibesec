@@ -1,0 +1,16 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PyYAML
+        run: pip install pyyaml
+      - name: Validate skill structure
+        run: python3 .github/scripts/validate.py

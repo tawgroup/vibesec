@@ -19,10 +19,11 @@ CREATE POLICY "users read own" ON public.<table>
   FOR SELECT USING (auth.uid() = user_id);
 ```
 
-### S-C2. `service_role` key in client-side code
-**Look for:** `grep -rn "service_role\|SUPABASE_SERVICE_ROLE" --include="*.ts" --include="*.tsx" --include="*.js"`. Any match in a file that is client-bundled (anything under `"use client"` or imported by one) is critical. Also flag `NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY` immediately.
-**Why this is bad:** service_role bypasses RLS. Leaking it = full DB access for anyone.
-**Fix:** Only use service_role in Route Handlers / Server Actions / Edge Functions. Read from `process.env.SUPABASE_SERVICE_ROLE_KEY` (no `NEXT_PUBLIC_`).
+### S-C2. `service_role` / secret key in client-side code
+**Look for:** `grep -rn "service_role\|SUPABASE_SERVICE_ROLE\|sb_secret_" --include="*.ts" --include="*.tsx" --include="*.js"`. Any match in a file that is client-bundled (anything under `"use client"` or imported by one) is critical. Also flag `NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY` (or any `NEXT_PUBLIC_*` var holding an `sb_secret_` key) immediately.
+**Note on key formats:** Supabase's new API keys look like `sb_secret_...` (secret, server-only) and `sb_publishable_...` (safe for the browser, replaces the anon key). An `sb_secret_` key has the same power as the legacy `service_role` JWT — same rule applies.
+**Why this is bad:** service_role / `sb_secret_` bypasses RLS. Leaking it = full DB access for anyone.
+**Fix:** Only use the secret key in Route Handlers / Server Actions / Edge Functions. Read from `process.env.SUPABASE_SERVICE_ROLE_KEY` or `process.env.SUPABASE_SECRET_KEY` (no `NEXT_PUBLIC_`).
 
 ### S-C3. Authorization driven by `user_metadata`
 **Look for:** `grep -rn "user_metadata" --include="*.ts" --include="*.tsx" --include="*.sql"`. Flag any usage in:

@@ -1,7 +1,7 @@
 {
   "name": "vibesec",
   "displayName": "Vibesec — Vibe-Code Security",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Pre-deploy security audit for vibe-coded apps. Catches unauthenticated admin APIs, missing RLS, leaked service keys, exposed debug routes.",
   "author": {
     "name": "toanbku",

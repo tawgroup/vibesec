@@ -1,0 +1,38 @@
+name: Add a stack checklist
+description: Propose or claim a new stack (Prisma, Drizzle, FastAPI, Firebase, Clerk, ...)
+title: "Add <stack> checks"
+labels: ["new-stack", "good first issue"]
+body:
+  - type: input
+    id: stack
+    attributes:
+      label: Stack
+      description: Name of the framework / service / ORM
+      placeholder: e.g. Prisma
+    validations:
+      required: true
+  - type: input
+    id: detection
+    attributes:
+      label: Detection signal
+      description: How does vibesec know this stack is in use? Usually a package name in dependencies.
+      placeholder: e.g. `@prisma/client` in dependencies
+    validations:
+      required: true
+  - type: textarea
+    id: footguns
+    attributes:
+      label: Top footguns
+      description: >-
+        The 3-5 most common security mistakes vibe-coders ship with this stack.
+        Concrete, grep-able patterns preferred — "raw SQL via $queryRawUnsafe with
+        string interpolation" beats "SQL injection risk". Links to real-world
+        incidents are gold.
+    validations:
+      required: true
+  - type: checkboxes
+    id: claim
+    attributes:
+      label: Working on it?
+      options:
+        - label: I'd like to write the checklist and submit the PR myself

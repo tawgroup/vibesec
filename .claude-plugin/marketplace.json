@@ -9,7 +9,7 @@
       "name": "vibesec",
       "source": ".",
       "description": "Pre-deploy security audit for vibe-coded apps. Catches unauthenticated admin APIs, missing RLS, leaked service keys, exposed debug routes - the basic mistakes you don't want to ship.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "toanbku",
         "url": "https://github.com/toanbku"
