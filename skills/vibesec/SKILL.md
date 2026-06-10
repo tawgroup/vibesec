@@ -12,7 +12,7 @@ when_to_use: >
   "check my app for security issues", "pre-launch audit", "I vibe-coded this,
   please audit it". Also trigger on explicit requests like
   "run vibesec" or "/vibesec".
-allowed-tools: Read, Grep, Glob, Bash(cat *), Bash(ls *), Bash(find *), Bash(jq *), Bash(rg *)
+allowed-tools: Read, Grep, Glob, Bash(cat *), Bash(ls *), Bash(find *), Bash(jq *), Bash(rg *), Bash(git ls-files*), Bash(npm audit*), Bash(pnpm audit*), Bash(yarn audit*)
 ---
 
 # vibesec — Vibe-Code Security
