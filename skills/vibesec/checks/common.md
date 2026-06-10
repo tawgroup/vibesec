@@ -17,6 +17,7 @@ Run every check below. For each, report findings under the right severity. Cite 
   - `ghp_`, `gho_`, `ghu_` (GitHub)
   - `AIza` (Google API)
   - `AKIA` (AWS access key)
+  - `sb_secret_` (Supabase secret API key — new format, same power as `service_role`)
 
 **Why this is bad:** Git history is forever. Even after rotation, the old key sits in history and shows up in scrapers.
 **Fix:** Rotate the key NOW, then `git rm --cached`, add to `.gitignore`, force-push only if you understand the implications (or just rotate and move on).
@@ -39,7 +40,8 @@ Run every check below. For each, report findings under the right severity. Cite 
 **Look for:** Headers setting `Access-Control-Allow-Origin: *` combined with `Access-Control-Allow-Credentials: true`. This combination is actually rejected by browsers, but the *intent* signals a misunderstanding worth flagging - the developer probably wanted to allow specific origins.
 
 ### C-H4. Outdated dependencies with known CVEs
-**Action:** Run `npm audit --production` (or `pnpm audit`, `yarn audit`). Report only `high` and `critical` from the output. Skip dev-only vulns.
+**Action:** Only if a lockfile exists (`package-lock.json` / `pnpm-lock.yaml` / `yarn.lock`): run `npm audit --omit=dev` (or `pnpm audit --prod`, `yarn audit`). Report only `high` and `critical` from the output. Skip dev-only vulns.
+**If the command fails** (offline, no registry access, no lockfile): mark this check as skipped in the report — do not guess CVEs from version numbers.
 
 ---
 
