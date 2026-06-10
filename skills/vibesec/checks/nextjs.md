@@ -32,6 +32,13 @@ if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 **Why this is bad:** The admin key ends up in the client bundle. Game over - attacker has full DB.
 **Fix:** Move admin-key code to a Route Handler or Server Action. The client should call that route, never hold the key.
 
+### N-C4. Next.js version vulnerable to middleware bypass (CVE-2025-29927)
+**Look for:** The `next` version in `package.json` (prefer the resolved version in the lockfile if present). Vulnerable: `< 12.3.5`, `< 13.5.9`, `< 14.2.25`, `< 15.2.3` on the respective major.
+**Verify:** Does `middleware.ts` / `middleware.js` exist and do anything security-relevant (auth check, redirect to login, header gating)?
+**Flag if:** Version is vulnerable AND middleware performs auth → CRITICAL. Vulnerable but middleware does nothing security-relevant (or no middleware) → report as HIGH with "upgrade anyway".
+**Why this is bad:** A single request header (`x-middleware-subrequest`) makes Next.js skip middleware entirely — every middleware-based auth check is bypassed with one curl flag. Vercel and Netlify strip the header at the edge; self-hosted / Docker deployments are fully exposed.
+**Fix:** Upgrade `next` to `>= 15.2.3` / `14.2.25` / `13.5.9` / `12.3.5`. If you can't upgrade right now, strip or block external requests carrying `x-middleware-subrequest` at your proxy — and remember middleware should be defense-in-depth, not the only auth layer (see N-H2).
+
 ---
 
 ## HIGH
@@ -105,6 +112,31 @@ if (!data) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 ```
 Or: leave the query un-scoped but rely on RLS to enforce ownership (only safe if RLS policies are correct — see `checks/supabase.md`).
 
+### N-H7. Webhook endpoint without signature verification
+**Look for:** Route files with `webhook` in the path or filename: `app/api/**/*webhook*/route.{ts,js}`, `pages/api/**/*webhook*`. Read each handler.
+**Verify:** The handler proves the payload really came from the provider before acting on it:
+- Stripe: `stripe.webhooks.constructEvent(rawBody, signature, secret)`
+- Clerk / Svix: `new Webhook(secret).verify(payload, headers)`
+- GitHub: HMAC-SHA256 compare of `x-hub-signature-256`
+- Generic: constant-time comparison (`crypto.timingSafeEqual`) against a shared secret header
+
+**Flag if:** The handler parses the body and mutates data with no verification — or verification is **conditional**, e.g. `if (process.env.WEBHOOK_SECRET) { verify() }`. Conditional verification passes local testing and silently disables itself in prod when the env var is missing.
+**Why this is bad:** Anyone can POST a forged event — "payment succeeded", "subscription upgraded", "user created" — and your app acts on it. This is free money / free access for the attacker.
+**Fix template:**
+```ts
+const secret = process.env.STRIPE_WEBHOOK_SECRET
+if (!secret) {
+  // Fail closed — never fall through to "trust the payload"
+  return NextResponse.json({ error: 'Webhook not configured' }, { status: 500 })
+}
+let event: Stripe.Event
+try {
+  event = stripe.webhooks.constructEvent(await req.text(), sig, secret)
+} catch {
+  return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
+}
+```
+
 ---
 
 ## MEDIUM
@@ -124,6 +156,17 @@ Or: leave the query un-scoped but rely on RLS to enforce ownership (only safe if
 ### N-M4. Hardcoded `dangerouslySetInnerHTML` from user input
 **Look for:** `dangerouslySetInnerHTML` usage. For each, trace the source - is the HTML user-controlled?
 **Why this is bad:** Direct XSS if user-controlled.
+
+### N-M5. Open redirect from query params
+**Look for:** `redirect(` / `NextResponse.redirect(` / `router.push(` whose argument comes from the request: `searchParams.get('next')`, `?returnTo=`, `?callbackUrl=`, `?redirect=`, or a body field.
+**Verify:** The value is validated before redirecting — allowlist of paths, or forced relative (`startsWith('/')` AND NOT `startsWith('//')`).
+**Why this is bad:** `https://yourapp.com/login?next=https://evil.com` — a phishing link that routes through your trusted domain and lands users on an attacker page, typically to re-harvest credentials. AI loves writing `redirect(searchParams.get('next') ?? '/')` in login flows.
+**Fix:**
+```ts
+const next = searchParams.get('next') ?? '/'
+const safe = next.startsWith('/') && !next.startsWith('//') ? next : '/'
+redirect(safe)
+```
 
 ---
 
